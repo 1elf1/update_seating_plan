@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Seating Plan Uploader</title>
+</head>
+<body>
+
+  <h2>Seating Plan Updater</h2>
+
+  <form id="uploadForm">
+    <label>
+      GitHub Token:
+      <input type="password" id="token" required>
+    </label><br><br>
+
+    <label>
+      Select File (.csv):
+      <input type="file" id="fileInput" accept=".csv" required>
+    </label><br><br>
+<script>
+const tokenInput = document.getElementById('token');
+
+// Load saved token on page load
+window.addEventListener('DOMContentLoaded', () => {
+  const savedToken = localStorage.getItem('githubToken');
+  if (savedToken) tokenInput.value = savedToken;
+});
+
+// Update token in localStorage when user types a new one
+tokenInput.addEventListener('input', () => {
+  localStorage.setItem('githubToken', tokenInput.value.trim());
+});
+</script>
+    <button type="submit">Upload Seating Plan</button>
+    <button type="button" id="removeBtn">Remove Seating Plan</button>
+  </form>
+
+  <pre id="response" style="margin-top:20px; white-space: pre-wrap;"></pre>
+
+  <script>
+    const repo = "1elf1/update_seating_plan";
+    const filePath = "seating_plan.csv";
+
+    document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const token = document.getElementById('token').value.trim();
+      const file = document.getElementById('fileInput').files[0];
+      const responseEl = document.getElementById('response');
+
+      if (!file || !token) {
+        responseEl.textContent = '❌ Please provide a GitHub token and select a file.';
+        return;
+      }
+
+      // Step 1: Read file as base64
+      const fileContent = await file.text();
+      const base64Content = btoa(unescape(encodeURIComponent(fileContent)));
+
+      // Step 2: Get current SHA
+      const shaRes = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+        headers: {
+          Authorization: `token ${token}`,
+          Accept: 'application/vnd.github+json'
+        }
+      });
+
+      if (!shaRes.ok) {
+        responseEl.textContent = `❌ Error retrieving SHA: ${shaRes.status}`;
+        return;
+      }
+
+      const shaData = await shaRes.json();
+      const sha = shaData.sha;
+
+      // Step 3: Update file
+      const updateRes = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `token ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: "Update seating_plan.csv via UI",
+          content: base64Content,
+          sha: sha
+        })
+      });
+
+      const result = await updateRes.json();
+      if (updateRes.ok) {
+        responseEl.textContent = `✅ File updated.\nCommit: ${result.commit.html_url}`;
+      } else {
+        responseEl.textContent = `❌ Error:\n${JSON.stringify(result, null, 2)}`;
+      }
+    });
+
+    // Remove seating plan button
+    document.getElementById('removeBtn').addEventListener('click', async () => {
+      const token = document.getElementById('token').value.trim();
+      const responseEl = document.getElementById('response');
+
+      if (!token) {
+        responseEl.textContent = '❌ Please provide a GitHub token.';
+        return;
+      }
+
+      if (!confirm("Are you sure you want to remove the seating plan?")) {
+        return;
+      }
+
+      // Get SHA
+      const shaRes = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+        headers: {
+          Authorization: `token ${token}`,
+          Accept: 'application/vnd.github+json'
+        }
+      });
+
+      if (!shaRes.ok) {
+        responseEl.textContent = `❌ Error retrieving SHA: ${shaRes.status}`;
+        return;
+      }
+
+      const shaData = await shaRes.json();
+      const sha = shaData.sha;
+
+      // Base64 encode "No Data"
+      const base64Content = btoa("No Data");
+
+      // Send update
+      const updateRes = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `token ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: "Remove seating plan",
+          content: base64Content,
+          sha: sha
+        })
+      });
+
+      const result = await updateRes.json();
+      if (updateRes.ok) {
+        responseEl.textContent = `✅ Seating plan removed.\nCommit: ${result.commit.html_url}`;
+      } else {
+        responseEl.textContent = `❌ Error:\n${JSON.stringify(result, null, 2)}`;
+      }
+    });
+  </script>
+</body>
+</html>
