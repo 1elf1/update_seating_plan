@@ -1,4 +1,4 @@
-Room No. F-112,,,,,,,
+Room No. F-106,,,,,,,
 S.No,Row-I,Row-II,Row-III,Row-IV,Row-V,Row-VI,Row-VII
 1,,,,,,,
 2,,,,,,,
@@ -9,7 +9,7 @@ S.No,Row-I,Row-II,Row-III,Row-IV,Row-V,Row-VI,Row-VII
 7,,,,,,,
 8,,,,,,,
 9,,,,,,,
-Room No. F-113,,,,,,,
+Room No. F-107,,,,,,,
 S.No,Row-I,Row-II,Row-III,Row-IV,Row-V,Row-VI,Row-VII
 1,,,,,,,
 2,,,,,,,
@@ -57,7 +57,7 @@ S.No,Row-I,Row-II,Row-III,Row-IV,Row-V,Row-VI,Row-VII
 5,2415213,2415219,2415225,2415232,2415239,2415245,x
 6,2415214,2415220,2415226,2415233,2415240,2415246,x
 7,X,X,2415227,2415234,X,X,x
-Room No. F-106,,,,,,,
+Room No. F-112,,,,,,,
 S.No,Row-I,Row-II,Row-III,Row-IV,Row-V,Row-VI,Row-VII
 1,2103941,2104238,2103969,2203671,2302339,x,x
 2,2103944,2104259,2103974,2203672,2302340,2204250,x
@@ -68,7 +68,7 @@ S.No,Row-I,Row-II,Row-III,Row-IV,Row-V,Row-VI,Row-VII
 7,2103965,2203670,2203377,2302735,2302355,x,x
 8,X,x,2203378,2302736,2302358,x,x
 9,X,X,X,X,X,X,x
-Room No. F-107,,,,,,,
+Room No. F-113,,,,,,,
 S.No,Row-I,Row-II,Row-III,Row-IV,Row-V,Row-VI,Row-VII
 1,2302362,2302742,2302409,2302812,2302446,2435358,x
 2,2302366,2302744,2302413,2302819,2302448,2435359,x
